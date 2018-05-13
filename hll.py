@@ -1,3 +1,6 @@
+"""
+Contains an implementation of the HyperLogLog algorithm.
+"""
 import hashlib
 from collections import defaultdict
 
@@ -85,76 +88,24 @@ def HLL(items):
         estimates.append((dim, cardinality_estimate(maxbits)))
     return estimates
 
+def count(items):
+    """
+    Given a list of (dimension, element) pairs, compute the number of distinct
+    elements for each dimension. Can be used to compare results of the
+    HyperLogLog implementation.
+    """
+    res = defaultdict(lambda: set([]))
+    for dim, elem in items:
+        res[dim].add(elem)
+    return [(k, len(v)) for k, v in res.items()]
 
 if __name__ == "__main__":
-    print(HLL([
-        ("2018-05-06", "prod001"),
-        ("2018-05-06", "prod002"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod004"),
-        ("2018-05-06", "prod006"),
-        ("2018-05-06", "prod007"),
-        ("2018-05-06", "prod008"),
-        ("2018-05-06", "prod009"),
-        ("2018-05-06", "prod010"),
-        ("2018-05-06", "prod001"),
-        ("2018-05-06", "prod002"),
-        ("2018-05-06", "prod001"),
-        ("2018-05-06", "prod002"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-07", "prod003"),
-        ("2018-05-07", "prod003"),
-        ("2018-05-07", "prod004"),
-        ("2018-05-07", "prod005"),
-        ("2018-05-07", "prod006"),
-        ("2018-05-07", "prod007"),
-        ("2018-05-07", "prod003"),
-        ("2018-05-07", "prod003"),
-        ("2018-05-07", "prod003"),
-        ("2018-05-07", "prod111"),
-        ("2018-05-06", "prod003"),
-        ("2018-05-06", "prod003"),
-    ]))
+    fname = input("Name of file with input data? ")
+    with open(fname) as f:
+        items = [r.split(',') for r in f.read().splitlines()]
+        items = items[1:] # drop header
+    hll_counts = HLL(items)
+    actual_counts = count(items)
+    print(hll_counts)
+    print(actual_counts)
+
