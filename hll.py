@@ -99,6 +99,12 @@ def count(items):
         res[dim].add(elem)
     return [(k, len(v)) for k, v in res.items()]
 
+def print_cmp(estimates, actuals):
+    width = 30
+    print("{: <{width}}\t{: <{width}}\t{: <{width}}".format("date", "estimate", "actual", width=width))
+    for i, j in zip(estimates, actuals):
+        print("{: <{width}}\t{: <{width}}\t{: <{width}}".format(i[0], i[1], j[1], width=width))
+
 if __name__ == "__main__":
     fname = input("Name of file with input data? ")
     with open(fname) as f:
@@ -106,6 +112,5 @@ if __name__ == "__main__":
         items = items[1:] # drop header
     hll_counts = HLL(items)
     actual_counts = count(items)
-    print(hll_counts)
-    print(actual_counts)
+    print_cmp(hll_counts, actual_counts)
 
