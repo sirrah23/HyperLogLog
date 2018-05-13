@@ -1,4 +1,5 @@
 import hashlib
+from collections import defaultdict
 
 
 def hash_string(s):
@@ -73,22 +74,17 @@ def HLL(items):
     # 3. Add the (register #, first non-zero) to the dimension's dictionary if the
     #    first non-zero value for the register is greater than the current one
     # 4. Perform the cardinality estimate for each dimension
-    dim_reg_maxbit = {}
+    dim_reg_maxbit = defaultdict(lambda: defaultdict(int))
     for item in items:
         i_dim, i_elem = item
         i_reg, i_fnz_bit = element_to_register_nonzero(i_elem)
-        # TODO: defaultdict
-        if i_dim not in dim_reg_maxbit:
-            dim_reg_maxbit[i_dim] = {}
-        # TODO: defaultdict
-        if i_reg not in dim_reg_maxbit[i_dim]:
-            dim_reg_maxbit[i_dim][i_reg] = 0
         dim_reg_maxbit[i_dim][i_reg] = max(dim_reg_maxbit[i_dim][i_reg], i_fnz_bit)
     estimates = []
     for dim in dim_reg_maxbit:
         maxbits = [v for _, v in dim_reg_maxbit[dim].items()]
         estimates.append((dim, cardinality_estimate(maxbits)))
     return estimates
+
 
 if __name__ == "__main__":
     print(HLL([
